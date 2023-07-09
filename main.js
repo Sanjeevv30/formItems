@@ -213,7 +213,86 @@
 // });
 
 // Retrieve the name and email from local storage
-const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+// const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+
+// // Set the values in the input fields
+// document.getElementById('name').value = '';
+// document.getElementById('email').value = '';
+
+// // Update the user list in the UI
+// const userList = document.getElementById('users');
+// displayUsers(storedUsers, userList);
+
+// // Function to display users in the UI
+// function displayUsers(users, userList) {
+//   userList.innerHTML = '';
+//   users.forEach(function(user) {
+//     const li = document.createElement('li');
+//     li.appendChild(document.createTextNode(`${user.name}: ${user.email}`));
+
+//     const deleteBtn = document.createElement('button');
+//     deleteBtn.innerText = 'Delete';
+//     deleteBtn.addEventListener('click', function() {
+//       deleteUser(user, userList);
+//     });
+//     li.appendChild(deleteBtn);
+
+//     userList.appendChild(li);
+//   });
+// }
+
+// // Function to delete a user
+// function deleteUser(user, userList) {
+//   // Remove user from the stored users array
+//   const index = storedUsers.indexOf(user);
+//   if (index !== -1) {
+//     storedUsers.splice(index, 1);
+//   }
+
+//   // Update the user list in the UI
+//   displayUsers(storedUsers, userList);
+
+//   // Update the users in local storage
+//   localStorage.setItem('users', JSON.stringify(storedUsers));
+// }
+
+// document.getElementById('my-form').addEventListener('submit', function(e) {
+//   e.preventDefault();
+
+//   const nameInput = document.getElementById('name');
+//   const emailInput = document.getElementById('email');
+
+//   const name = nameInput.value;
+//   const email = emailInput.value;
+
+//   if (name === '' || email === '') {
+//     const msg = document.querySelector('.msg');
+//     msg.classList.add('error');
+//     msg.innerHTML = 'Please enter all fields';
+
+//     setTimeout(() => {
+//       msg.classList.remove('error');
+//       msg.innerHTML = '';
+//     }, 3000);
+//   } else {
+//     const user = {
+//       name: name,
+//       email: email
+//     };
+
+//     storedUsers.push(user);
+//     localStorage.setItem('users', JSON.stringify(storedUsers));
+
+//     nameInput.value = '';
+//     emailInput.value = '';
+
+//     // Update the user list in the UI
+//     displayUsers(storedUsers, userList);
+//   }
+// });
+
+// Retrieve the name and email from local storage
+let storedUsers = JSON.parse(localStorage.getItem('users')) || [];
 
 // Set the values in the input fields
 document.getElementById('name').value = '';
@@ -226,34 +305,39 @@ displayUsers(storedUsers, userList);
 // Function to display users in the UI
 function displayUsers(users, userList) {
   userList.innerHTML = '';
-  users.forEach(function(user) {
+  users.forEach(function(user, index) {
     const li = document.createElement('li');
     li.appendChild(document.createTextNode(`${user.name}: ${user.email}`));
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.innerText = 'Delete';
-    deleteBtn.addEventListener('click', function() {
-      deleteUser(user, userList);
+    const editBtn = document.createElement('button');
+    editBtn.innerText = 'Edit';
+    editBtn.addEventListener('click', function() {
+      editUser(index, userList);
     });
-    li.appendChild(deleteBtn);
+    li.appendChild(editBtn);
 
     userList.appendChild(li);
   });
 }
 
-// Function to delete a user
-function deleteUser(user, userList) {
-  // Remove user from the stored users array
-  const index = storedUsers.indexOf(user);
-  if (index !== -1) {
-    storedUsers.splice(index, 1);
+// Function to edit a user
+function editUser(index, userList) {
+  const user = storedUsers[index];
+  if (user) {
+    const newName = prompt('Enter the new name:', user.name);
+    const newEmail = prompt('Enter the new email:', user.email);
+
+    if (newName && newEmail) {
+      user.name = newName;
+      user.email = newEmail;
+
+      // Update the user list in the UI
+      displayUsers(storedUsers, userList);
+
+      // Update the users in local storage
+      localStorage.setItem('users', JSON.stringify(storedUsers));
+    }
   }
-
-  // Update the user list in the UI
-  displayUsers(storedUsers, userList);
-
-  // Update the users in local storage
-  localStorage.setItem('users', JSON.stringify(storedUsers));
 }
 
 document.getElementById('my-form').addEventListener('submit', function(e) {
@@ -290,4 +374,3 @@ document.getElementById('my-form').addEventListener('submit', function(e) {
     displayUsers(storedUsers, userList);
   }
 });
-
