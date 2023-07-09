@@ -129,6 +129,51 @@
 //   }
 // });
 
+// document.getElementById('my-form').addEventListener('submit', function(e) {
+//   e.preventDefault();
+
+//   const nameInput = document.getElementById('name');
+//   const emailInput = document.getElementById('email');
+//   const userList = document.getElementById('users');
+
+//   const name = nameInput.value;
+//   const email = emailInput.value;
+
+//   if (name === '' || email === '') {
+//     const msg = document.querySelector('.msg');
+//     msg.classList.add('error');
+//     msg.innerHTML = 'Please enter all fields';
+
+//     setTimeout(() => {
+//       msg.classList.remove('error');
+//       msg.innerHTML = '';
+//     }, 3000);
+//   } else {
+//     const user = {
+//       name: name,
+//       email: email
+//     };
+
+//     const li = document.createElement('li');
+//     li.appendChild(document.createTextNode(`${user.name}: ${user.email}`));
+//     userList.appendChild(li);
+
+//     nameInput.value = '';
+//     emailInput.value = '';
+
+//     // Convert the user object to a JSON string before storing in local storage
+//     localStorage.setItem('user', JSON.stringify(user));
+//   }
+// });
+
+// Retrieve the name and email from local storage
+const storedName = localStorage.getItem('name');
+const storedEmail = localStorage.getItem('email');
+
+// Set the values in the input fields
+document.getElementById('name').value = storedName || '';
+document.getElementById('email').value = storedEmail || '';
+
 document.getElementById('my-form').addEventListener('submit', function(e) {
   e.preventDefault();
 
@@ -161,11 +206,8 @@ document.getElementById('my-form').addEventListener('submit', function(e) {
     nameInput.value = '';
     emailInput.value = '';
 
-    // Convert the user object to a JSON string before storing in local storage
-    localStorage.setItem('user', JSON.stringify(user));
+    // Store the user details in local storage
+    localStorage.setItem('name', name);
+    localStorage.setItem('email', email);
   }
 });
-
-
-
-
