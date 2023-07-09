@@ -167,19 +167,100 @@
 // });
 
 // Retrieve the name and email from local storage
-const storedName = localStorage.getItem('name');
-const storedEmail = localStorage.getItem('email');
+// const storedName = localStorage.getItem('name');
+// const storedEmail = localStorage.getItem('email');
+
+// // Set the values in the input fields
+// document.getElementById('name').value = storedName || '';
+// document.getElementById('email').value = storedEmail || '';
+
+// document.getElementById('my-form').addEventListener('submit', function(e) {
+//   e.preventDefault();
+
+//   const nameInput = document.getElementById('name');
+//   const emailInput = document.getElementById('email');
+//   const userList = document.getElementById('users');
+
+//   const name = nameInput.value;
+//   const email = emailInput.value;
+
+//   if (name === '' || email === '') {
+//     const msg = document.querySelector('.msg');
+//     msg.classList.add('error');
+//     msg.innerHTML = 'Please enter all fields';
+
+//     setTimeout(() => {
+//       msg.classList.remove('error');
+//       msg.innerHTML = '';
+//     }, 3000);
+//   } else {
+//     const user = {
+//       name: name,
+//       email: email
+//     };
+
+//     const li = document.createElement('li');
+//     li.appendChild(document.createTextNode(`${user.name}: ${user.email}`));
+//     userList.appendChild(li);
+
+//     nameInput.value = '';
+//     emailInput.value = '';
+
+//     // Store the user details in local storage
+//     localStorage.setItem('name', name);
+//     localStorage.setItem('email', email);
+//   }
+// });
+
+// Retrieve the name and email from local storage
+const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
 
 // Set the values in the input fields
-document.getElementById('name').value = storedName || '';
-document.getElementById('email').value = storedEmail || '';
+document.getElementById('name').value = '';
+document.getElementById('email').value = '';
+
+// Update the user list in the UI
+const userList = document.getElementById('users');
+displayUsers(storedUsers, userList);
+
+// Function to display users in the UI
+function displayUsers(users, userList) {
+  userList.innerHTML = '';
+  users.forEach(function(user) {
+    const li = document.createElement('li');
+    li.appendChild(document.createTextNode(`${user.name}: ${user.email}`));
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.innerText = 'Delete';
+    deleteBtn.addEventListener('click', function() {
+      deleteUser(user, userList);
+    });
+    li.appendChild(deleteBtn);
+
+    userList.appendChild(li);
+  });
+}
+
+// Function to delete a user
+function deleteUser(user, userList) {
+  // Remove user from the stored users array
+  const index = storedUsers.indexOf(user);
+  if (index !== -1) {
+    storedUsers.splice(index, 1);
+  }
+
+  // Update the user list in the UI
+  displayUsers(storedUsers, userList);
+
+  // Update the users in local storage
+  localStorage.setItem('users', JSON.stringify(storedUsers));
+}
 
 document.getElementById('my-form').addEventListener('submit', function(e) {
   e.preventDefault();
 
   const nameInput = document.getElementById('name');
   const emailInput = document.getElementById('email');
-  const userList = document.getElementById('users');
 
   const name = nameInput.value;
   const email = emailInput.value;
@@ -199,15 +280,14 @@ document.getElementById('my-form').addEventListener('submit', function(e) {
       email: email
     };
 
-    const li = document.createElement('li');
-    li.appendChild(document.createTextNode(`${user.name}: ${user.email}`));
-    userList.appendChild(li);
+    storedUsers.push(user);
+    localStorage.setItem('users', JSON.stringify(storedUsers));
 
     nameInput.value = '';
     emailInput.value = '';
 
-    // Store the user details in local storage
-    localStorage.setItem('name', name);
-    localStorage.setItem('email', email);
+    // Update the user list in the UI
+    displayUsers(storedUsers, userList);
   }
 });
+
