@@ -292,35 +292,123 @@
 // });
 
 // Retrieve the name and email from local storage
+// let storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+
+// // Set the values in the input fields
+// document.getElementById('name').value = '';
+// document.getElementById('email').value = '';
+
+// // Update the user list in the UI
+// const userList = document.getElementById('users');
+// displayUsers(storedUsers, userList);
+
+// // Function to display users in the UI
+// function displayUsers(users, userList) {
+//   userList.innerHTML = '';
+//   users.forEach(function(user, index) {
+//     const li = document.createElement('li');
+//     li.appendChild(document.createTextNode(`${user.name}: ${user.email}`));
+
+//     const editBtn = document.createElement('button');
+//     editBtn.innerText = 'Edit';
+//     editBtn.addEventListener('click', function() {
+//       editUser(index, userList);
+//     });
+//     li.appendChild(editBtn);
+
+//     userList.appendChild(li);
+//   });
+// }
+
+// Function to edit a user
+// function editUser(index, userList) {
+//   const user = storedUsers[index];
+//   if (user) {
+//     const newName = prompt('Enter the new name:', user.name);
+//     const newEmail = prompt('Enter the new email:', user.email);
+
+//     if (newName && newEmail) {
+//       user.name = newName;
+//       user.email = newEmail;
+
+//       // Update the user list in the UI
+//       displayUsers(storedUsers, userList);
+
+//       // Update the users in local storage
+//       localStorage.setItem('users', JSON.stringify(storedUsers));
+//     }
+//   }
+// }
+
+// document.getElementById('my-form').addEventListener('submit', function(e) {
+//   e.preventDefault();
+
+//   const nameInput = document.getElementById('name');
+//   const emailInput = document.getElementById('email');
+
+//   const name = nameInput.value;
+//   const email = emailInput.value;
+
+//   if (name === '' || email === '') {
+//     const msg = document.querySelector('.msg');
+//     msg.classList.add('error');
+//     msg.innerHTML = 'Please enter all fields';
+
+//     setTimeout(() => {
+//       msg.classList.remove('error');
+//       msg.innerHTML = '';
+//     }, 3000);
+//   } else {
+//     const user = {
+//       name: name,
+//       email: email
+//     };
+
+//     storedUsers.push(user);
+//     localStorage.setItem('users', JSON.stringify(storedUsers));
+
+//     nameInput.value = '';
+//     emailInput.value = '';
+
+//     // Update the user list in the UI
+//     displayUsers(storedUsers, userList);
+//   }
+// });
+// JavaScript (main.js)
 let storedUsers = JSON.parse(localStorage.getItem('users')) || [];
 
-// Set the values in the input fields
 document.getElementById('name').value = '';
 document.getElementById('email').value = '';
 
-// Update the user list in the UI
 const userList = document.getElementById('users');
 displayUsers(storedUsers, userList);
 
-// Function to display users in the UI
 function displayUsers(users, userList) {
   userList.innerHTML = '';
-  users.forEach(function(user, index) {
+  users.forEach(function (user, index) {
     const li = document.createElement('li');
     li.appendChild(document.createTextNode(`${user.name}: ${user.email}`));
 
     const editBtn = document.createElement('button');
     editBtn.innerText = 'Edit';
-    editBtn.addEventListener('click', function() {
+    editBtn.className = 'btn btn-primary btn-sm ml-2';
+    editBtn.addEventListener('click', function () {
       editUser(index, userList);
     });
     li.appendChild(editBtn);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.innerText = 'Delete';
+    deleteBtn.className = 'btn btn-danger btn-sm ml-2';
+    deleteBtn.addEventListener('click', function () {
+      deleteUser(index, userList);
+    });
+    li.appendChild(deleteBtn);
 
     userList.appendChild(li);
   });
 }
 
-// Function to edit a user
 function editUser(index, userList) {
   const user = storedUsers[index];
   if (user) {
@@ -340,7 +428,17 @@ function editUser(index, userList) {
   }
 }
 
-document.getElementById('my-form').addEventListener('submit', function(e) {
+function deleteUser(index, userList) {
+  storedUsers.splice(index, 1);
+
+  // Update the user list in the UI
+  displayUsers(storedUsers, userList);
+
+  // Update the users in local storage
+  localStorage.setItem('users', JSON.stringify(storedUsers));
+}
+
+document.getElementById('my-form').addEventListener('submit', function (e) {
   e.preventDefault();
 
   const nameInput = document.getElementById('name');
@@ -365,12 +463,19 @@ document.getElementById('my-form').addEventListener('submit', function(e) {
     };
 
     storedUsers.push(user);
-    localStorage.setItem('users', JSON.stringify(storedUsers));
-
+    //localStorage.setItem('users', JSON.stringify(storedUsers));
+    
+    axios.post('https://crudcrud.com/api/62ac8b22b56f41478d15ac6984d0d696/appoimentData',user)
+    .then((response)=>{
+      console.log(response)
+    }).catch((err)=>{
+      console.log(err)
+    })
     nameInput.value = '';
     emailInput.value = '';
 
-    // Update the user list in the UI
-    displayUsers(storedUsers, userList);
+    
+    //displayUsers(storedUsers, userList);
   }
 });
+
