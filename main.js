@@ -374,7 +374,8 @@
 //     displayUsers(storedUsers, userList);
 //   }
 // });
-// JavaScript (main.js)
+
+
 let storedUsers = JSON.parse(localStorage.getItem('users')) || [];
 
 document.getElementById('name').value = '';
@@ -385,6 +386,7 @@ displayUsers(storedUsers, userList);
 
 function displayUsers(users, userList) {
   userList.innerHTML = '';
+
   users.forEach(function (user, index) {
     const li = document.createElement('li');
     li.appendChild(document.createTextNode(`${user.name}: ${user.email}`));
@@ -419,23 +421,40 @@ function editUser(index, userList) {
       user.name = newName;
       user.email = newEmail;
 
-      // Update the user list in the UI
+      
       displayUsers(storedUsers, userList);
 
-      // Update the users in local storage
       localStorage.setItem('users', JSON.stringify(storedUsers));
+
+      
+      axios.put(`https://crudcrud.com/api/62ac8b22b56f41478d15ac6984d0d696/appoimentData/${user._id}`, user)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }
 }
 
 function deleteUser(index, userList) {
-  storedUsers.splice(index, 1);
+  const user = storedUsers[index];
+  if (user && user._id) {
+    axios.delete(`https://crudcrud.com/api/62ac8b22b56f41478d15ac6984d0d696/appoimentData/${user._id}`)
+      .then((response) => {
+        storedUsers.splice(index, 1);
 
-  // Update the user list in the UI
-  displayUsers(storedUsers, userList);
+        
+        displayUsers(storedUsers, userList);
 
-  // Update the users in local storage
-  localStorage.setItem('users', JSON.stringify(storedUsers));
+        
+        localStorage.setItem('users', JSON.stringify(storedUsers));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 }
 
 document.getElementById('my-form').addEventListener('submit', function (e) {
@@ -462,20 +481,23 @@ document.getElementById('my-form').addEventListener('submit', function (e) {
       email: email
     };
 
-    storedUsers.push(user);
-    //localStorage.setItem('users', JSON.stringify(storedUsers));
-    
-    axios.post('https://crudcrud.com/api/62ac8b22b56f41478d15ac6984d0d696/appoimentData',user)
-    .then((response)=>{
-      console.log(response)
-    }).catch((err)=>{
-      console.log(err)
-    })
-    nameInput.value = '';
-    emailInput.value = '';
+    axios.post('https://crudcrud.com/api/62ac8b22b56f41478d15ac6984d0d696/appoimentData', user)
+      .then((response) => {
+        user._id = response.data._id;
+        storedUsers.push(user);
 
-    
-    //displayUsers(storedUsers, userList);
+      
+        displayUsers(storedUsers, userList);
+
+        
+        localStorage.setItem('users', JSON.stringify(storedUsers));
+
+        
+        nameInput.value = '';
+        emailInput.value = '';
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 });
-
